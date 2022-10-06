@@ -3,13 +3,13 @@ import ProductModel from '../models/product.model';
 import IProduct from '../interfaces/product.interface';
 
 export default class ProductService {
-  public model: ProductModel;
+  public productModel: ProductModel;
 
   constructor() {
-    this.model = new ProductModel(connection);
+    this.productModel = new ProductModel(connection);
   }
 
-  public insert = async (product: IProduct): Promise<IProduct> => this.model.insert(product);
+  public insert = async (product: IProduct): Promise<IProduct> => this.productModel.insert(product);
 
-  public getAll = async (): Promise<IProduct[]> => this.model.getAll();
+  public getAll = async (): Promise<IProduct[]> => this.productModel.getAll();
 }
