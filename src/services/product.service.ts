@@ -10,4 +10,6 @@ export default class ProductService {
   }
 
   public insert = async (product: Product): Promise<Product> => this.model.insert(product);
+
+  public getAll = async (): Promise<Product[]> => this.model.getAll();
 }
