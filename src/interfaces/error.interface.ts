@@ -1,5 +1,6 @@
-interface IError extends Omit<Error, 'name'> {
+interface IError {
   status: number;
+  message: string;
 }
 
 export default IError;

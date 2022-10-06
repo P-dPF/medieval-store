@@ -1,21 +1,24 @@
 import { NextFunction, Request, Response } from 'express';
 import LoginService from '../services/login.service';
 import statusCodes from '../utils/statusCodes';
-import validateSchema from '../middlewares/validateSchemas';
-import loginSchema from '../middlewares/schemas';
-import errorGenerator from '../middlewares/errorGenerator';
+import validateSchema from '../validations/validateSchemas';
+import loginSchema from '../validations/schemas';
+import errorGenerator from '../utils/errorGenerator';
 
 export default class LoginController {
   constructor(private service = new LoginService()) { }
 
   public loginHandler = async (req: Request, res: Response, next: NextFunction) => {
-    const loginInfo = req.body;
+    const login = req.body;
 
-    const loginError = validateSchema(loginSchema, loginInfo);
-    if (loginError) return next(errorGenerator(statusCodes.BAD_REQUEST, loginInfo.message));
+    const error = validateSchema(loginSchema, login);
+    
+    if (error) return next(errorGenerator(statusCodes.BAD_REQUEST, error.message));
 
-    const { username, password } = loginInfo;
-    const token = await this.service.loginHandler(username, password);
+    const token = await this.service.loginHandler(login.username, login.password);
+    if (!token) {
+      return res.status(statusCodes.UNAUTHORIZED).json({ message: 'Username or password invalid' });
+    }
     res.status(statusCodes.OK).json({ token });
   };
 }

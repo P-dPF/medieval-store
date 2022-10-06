@@ -10,8 +10,10 @@ export default class LoginService {
     this.model = new LoginModel(connection);
   }
 
-  public loginHandler = async (username: string, password: string): Promise<string> => {
+  public loginHandler = async (username: string, password: string): Promise<string | null> => {
     const loggedUser = await this.model.loginHandler(username, password);
+    if (!loggedUser) return null;
+
     const token = this.generateToken(loggedUser);
     return token;
   };
