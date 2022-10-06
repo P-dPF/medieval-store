@@ -4,14 +4,14 @@ import UserModel from '../models/user.model';
 import IUser from '../interfaces/user.interface';
 
 export default class UserService {
-  public userModel: UserModel;
+  public model: UserModel;
 
   constructor() {
-    this.userModel = new UserModel(connection);
+    this.model = new UserModel(connection);
   }
 
   public insert = async (user: IUser): Promise<string> => {
-    const createdUser = await this.userModel.insert(user);
+    const createdUser = await this.model.insert(user);
     const token = this.generateToken(createdUser);
     return token;
   };
