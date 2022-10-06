@@ -9,9 +9,5 @@ export default class ProductService {
     this.model = new ProductModel(connection);
   }
 
-  public async insert(product: Product): Promise<Product> {
-    const insertedProduct = this.model.insert(product);
-
-    return insertedProduct;
-  }
+  public insert = async (product: Product): Promise<Product> => this.model.insert(product);
 }
