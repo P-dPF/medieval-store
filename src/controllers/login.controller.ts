@@ -4,6 +4,7 @@ import statusCodes from '../utils/statusCodes';
 import validateSchema from '../validations/validateSchemas';
 import loginSchema from '../validations/schemas';
 import errorGenerator from '../utils/errorGenerator';
+import IUser from '../interfaces/user.interface';
 
 export default class LoginController {
   constructor(private service = new LoginService()) { }
@@ -11,7 +12,7 @@ export default class LoginController {
   public loginHandler = async (req: Request, res: Response, next: NextFunction) => {
     const login = req.body;
 
-    const error = validateSchema(loginSchema, login);
+    const error = validateSchema<IUser>(loginSchema, login);
     
     if (error) return next(errorGenerator(statusCodes.BAD_REQUEST, error.message));
 
