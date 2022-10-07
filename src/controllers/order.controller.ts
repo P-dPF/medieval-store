@@ -9,4 +9,12 @@ export default class OrderController {
     const ordersList = await this.service.getAll();
     res.status(statusCodes.OK).json(ordersList);
   };
+
+  public insert = async (req: Request, res: Response) => {
+    const newOrder = req.body;
+    const userId = 1;
+    
+    const insertedOrder = await this.service.insert(newOrder, userId);
+    res.status(statusCodes.CREATED).json(insertedOrder);
+  };
 }
