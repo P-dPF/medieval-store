@@ -22,21 +22,25 @@ export default class OrderModel {
     return result;
   };
 
-  public insert = async (order: IOrder, userId: number): Promise<IOrder> => {
-    const { productsIds } = order;
-    const [{ insertId: newOrder }] = await this.connection.execute<ResultSetHeader>(
+  public insertOrder = async (userId: number): Promise<number> => {
+    const [{ insertId: newOrderId }] = await this.connection.execute<ResultSetHeader>(
       'INSERT INTO Trybesmith.Orders (userId) VALUE (?);',
       [userId],
     );
 
+    return newOrderId;
+  };
+
+  public updateProducts = async (order: IOrder, newOrderId: number): Promise<number[]> => {
+    const { productsIds } = order;
     const updateProducts = productsIds.map((productId: number) => (
       this.connection.execute<ResultSetHeader>(
         'UPDATE Trybesmith.Products SET orderId = ? WHERE id = ?',
-        [newOrder, productId],
+        [newOrderId, productId],
       )));
 
-    await Promise.all([newOrder, updateProducts]);
+    await Promise.all(updateProducts);
 
-    return { userId, productsIds };
+    return productsIds;
   };
 }

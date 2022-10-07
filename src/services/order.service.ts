@@ -11,7 +11,9 @@ export default class OrderService {
 
   public getAll = async (): Promise<IOrder[]> => this.model.getAll();
 
-  public insert = async (order: IOrder, userId: number): Promise<IOrder> => (
-    this.model.insert(order, userId)
-  );
+  public insert = async (order: IOrder, userId: number): Promise<IOrder> => {
+    const newOrderId = await this.model.insertOrder(userId);
+    const productsIds = await this.model.updateProducts(order, newOrderId);
+    return { userId, productsIds };
+  };
 }
