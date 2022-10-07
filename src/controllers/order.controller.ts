@@ -19,13 +19,12 @@ export default class OrderController {
     res: Response, 
     next: NextFunction,
   ):Promise<IError | void> => {
-    const newOrder = req.body;
-    const userId = 3;
+    const { productsIds, user } = req.body;
 
-    const joiError = joiInputValidate<IOrder>(addOrderSchema, newOrder);
+    const joiError = joiInputValidate<IOrder>(addOrderSchema, { productsIds });
     if (joiError) return next(joiError);
     
-    const insertedOrder = await this.service.insert(newOrder, userId);
+    const insertedOrder = await this.service.insert({ productsIds }, user.id);
     res.status(statusCodes.CREATED).json(insertedOrder);
   };
 }
