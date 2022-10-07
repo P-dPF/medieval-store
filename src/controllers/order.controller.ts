@@ -5,6 +5,7 @@ import OrderService from '../services/order.service';
 import statusCodes from '../utils/statusCodes';
 import joiInputValidate from '../validations/joi.input.validation';
 import { addOrderSchema } from '../validations/schemas';
+import IRequest from '../interfaces/request.interface';
 
 export default class OrderController {
   constructor(private service = new OrderService()) { }
@@ -15,16 +16,17 @@ export default class OrderController {
   };
 
   public insert = async (
-    req: Request,
+    req: IRequest,
     res: Response, 
     next: NextFunction,
   ):Promise<IError | void> => {
-    const { productsIds, user } = req.body;
+    const { productsIds } = req.body;
+    const { user } = req;
 
     const joiError = joiInputValidate<IOrder>(addOrderSchema, { productsIds });
     if (joiError) return next(joiError);
     
-    const insertedOrder = await this.service.insert({ productsIds }, user.id);
+    const insertedOrder = await this.service.insert({ productsIds }, user?.id);
     res.status(statusCodes.CREATED).json(insertedOrder);
   };
 }

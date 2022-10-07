@@ -1,11 +1,12 @@
-import jwt from 'jsonwebtoken';
-import { NextFunction, Request, Response } from 'express';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { NextFunction, Response } from 'express';
 import statusCodes from '../utils/statusCodes';
 import errorGenerator from '../utils/errorGenerator';
 import IError from '../interfaces/error.interface';
+import IRequest from '../interfaces/request.interface';
 
 const validateToken = async (
-  req: Request,
+  req: IRequest,
   res: Response, 
   next: NextFunction,
 ): Promise<IError | void> => {
@@ -14,7 +15,8 @@ const validateToken = async (
 
   try {
     const decoded = jwt.verify(token, 'password');
-    req.body.user = decoded;
+    
+    req.user = decoded as JwtPayload;
     next();
   } catch (error) {
     next(errorGenerator(statusCodes.UNAUTHORIZED, 'Invalid token'));
