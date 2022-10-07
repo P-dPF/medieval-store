@@ -7,6 +7,8 @@ enum JoiErrorTypes {
   'any.required' = 1,
   'string.min',
   'string.base',
+  'number.min',
+  'number.base',
 }
 
 const validateSchema = <T>(schema: Schema, data: T): ValidationError | undefined => {
@@ -16,15 +18,20 @@ const validateSchema = <T>(schema: Schema, data: T): ValidationError | undefined
 };
 
 const joiErrorGenerator = (errorType: string, errorMessage: string): IError => {
-  if (errorType === JoiErrorTypes[2] || errorType === JoiErrorTypes[3]) {
-    return errorGenerator(statusCodes.UNPROCESSABLE_ENTITY, errorMessage);
+  switch (errorType) {
+    case JoiErrorTypes[2]:
+    case JoiErrorTypes[3]:
+    case JoiErrorTypes[4]:
+    case JoiErrorTypes[5]:
+      return errorGenerator(statusCodes.UNPROCESSABLE_ENTITY, errorMessage);
+    default:
+      return errorGenerator(statusCodes.BAD_REQUEST, errorMessage);
   }
-  
-  return errorGenerator(statusCodes.BAD_REQUEST, errorMessage);
 };
 
 const joiInputValidate = <T>(schema: Schema, data: T) => {
   const hasError = validateSchema<T>(schema, data);
+  console.log(hasError);
   if (hasError) return joiErrorGenerator(hasError.details[0].type, hasError.message);
 
   return hasError;
